@@ -34,7 +34,7 @@
 ; 메세지 부분
 
 		DB		0x0a, 0x0a		; 개행을 2개
-		DB		"LUDOS"
+		DB		"LUDOS: Hello, World!"
 		DB		0x0a			; 개행
 		DB		0
 
