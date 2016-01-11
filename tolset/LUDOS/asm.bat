@@ -1,1 +1,1 @@
-..\z_tools\nask.exe LUDOS.nas LUDOS.img
+..\z_tools\nask.exe ipl.nas ipl.bin ipl.lst
