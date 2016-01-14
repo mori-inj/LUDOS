@@ -41,15 +41,31 @@ entry:
 		MOV		CH, 0			; 실린더 0
 		MOV		DH, 0			; 헤드 0
 		MOV		CL, 2			; 섹터 2
-
+readloop:
+		MOV		SI, 0			; 실패 회수를 세는 레지스터
+retry:
 		MOV		AH, 0x02		; AH=0x02 : 디스크 read
 		MOV		AL, 1			; 1섹터
 		MOV		BX,0
 		MOV		DL, 0x00		; A드라이브
 		INT		0x13			; 디스크 BIOS 호출
-		JC		error
+		JNC		next			; 에러가 일어나지 않으면 next에
+		ADD		SI, 1			; SI에 1을 더한다
+		CMP		SI, 5			; SI와 5를 비교
+		JAE		error			; SI >= 5 이면 error에
+		MOV		AH,0x00
+		MOV		DL, 0x00		; A드라이브
+		INT		0x13			; 드라이브의 리셋트
+		JMP		retry
+next:
+		MOV		AX, ES			; 주소를 0x200 진행한다
+		ADD		AX,0x0020
+		MOV		ES, AX			; ADD ES, 0x020라고 하는 명령이 없기 때문에 이렇게 하고 있다
+		ADD		CL, 1			; CL에 1을 더한다
+		CMP		CL, 18			; CL와 18을 비교
+		JBE		readloop		; CL <= 18 이라면 readloop에
 
-; 다 읽었지만 우선 할일 없기 때문에 sleeve
+; 다 읽었지만 우선 할일이 없기 때문에 sleeve
 
 fin:
 		HLT					; 무엇인가 있을 때까지 CPU를 정지시킨다
