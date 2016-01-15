@@ -1,6 +1,8 @@
 ; haribote-ipl
 ; TAB=4
 
+CYLS	EQU		10				; 어디까지 Read할까
+
 		ORG		0x7c00			; 이 프로그램이 어디에 Read되는가
 
 ; 이하는 표준적인 FAT12 포맷 플로피 디스크를 위한 기술
@@ -15,7 +17,7 @@
 		DW		224			; 루트 디렉토리 영역의 크기(보통은 224엔트리로 한다)
 		DW		2880			; 드라이브 크기(2880섹터로 해야 함)
 		DB		0xf0			; 미디어 타입(0xf0로 해야 함)
-		DW		9			; FAT영역 길이(9섹터로 해야 함)
+		DW		9			; FAT영역의 길이(9섹터로 해야 함)
 		DW		18			; 1트럭에 몇개의 섹터가 있을까(18로 해야 함)
 		DW		2			; 헤드 수(2로 해야 함)
 		DD		0			; 파티션을 사용하지 않기 때문에 여기는 반드시 0
@@ -60,10 +62,18 @@ retry:
 next:
 		MOV		AX, ES			; 주소를 0x200 진행한다
 		ADD		AX,0x0020
-		MOV		ES, AX			; ADD ES, 0x020라고 하는 명령이 없기 때문에 이렇게 하고 있다
+		MOV		ES, AX			; ADD ES, 0x020 라고 하는 명령이 없기 때문에 이렇게 하고 있다
 		ADD		CL, 1			; CL에 1을 더한다
 		CMP		CL, 18			; CL와 18을 비교
 		JBE		readloop		; CL <= 18 이라면 readloop에
+		MOV		CL,1
+		ADD		DH,1
+		CMP		DH,2
+		JB		readloop		; DH < 2 라면 readloop에
+		MOV		DH,0
+		ADD		CH,1
+		CMP		CH,CYLS
+		JB		readloop		; CH < CYLS 라면 readloop에
 
 ; 다 읽었지만 우선 할일이 없기 때문에 sleeve
 
