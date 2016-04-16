@@ -1,4 +1,4 @@
-; hello-os
+; LUDOS
 ; TAB=4
 
 		ORG		0x7c00			; 이 프로그램이 어디에 read되는가
@@ -7,7 +7,7 @@
 
 		JMP		entry
 		DB		0x90
-		DB		"HELLOIPL"		; boot sector이름을 자유롭게 써도 좋다(8바이트)
+		DB		"LUDOSIPL"		; boot sector이름을 자유롭게 써도 좋다(8바이트)
 		DW		512			; 1섹터 크기(512로 해야 함)
 		DB		1			; 클러스터 크기(1섹터로 해야 함)
 		DW		1			; FAT가 어디에서 시작될까(보통 1섹터째부터)
@@ -22,7 +22,7 @@
 		DD		2880			; 드라이브 크기를 한번 더 write
 		DB		0,0,0x29		; 잘 모르지만 이 값으로 해 두면 좋은 것 같다
 		DD		0xffffffff		; 아마, 볼륨 시리얼 번호
-		DB		"HELLO-OS   "		; 디스크 이름(11바이트)
+		DB		"LUDOS      "		; 디스크 이름(11바이트)
 		DB		"FAT12   "		; 포맷 이름(8바이트)
 		RESB	18				; 우선 18바이트를 비어 둔다
 
