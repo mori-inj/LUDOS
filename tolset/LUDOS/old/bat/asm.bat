@@ -1,0 +1,1 @@
+..\z_tools\nask.exe %1 %2 %3

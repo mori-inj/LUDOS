@@ -1,0 +1,1 @@
+..\z_tools\edimg.exe   imgin:../z_tools/fdimg0at.tek   wbinimg src:%1 len:512 from:0 to:0   imgout:%2
