@@ -110,7 +110,7 @@ VRAM는 0xa0000 ~ 0xaffff의 64 KB입니다.
 * DL: 드라이브 번호(0x00 ~ 0x7f：FDD, 0x80 ~ 0xff：HDD)  
 * ES:BX = 버퍼 어드레스(검사 or 찾기 시 참조 안 함)  
 * 반환값:  
-    * FLAGS.CF == 0 : 에러 없음  
+    * FLAGS.CF == 0 : 에러 없음, AH == 0  
     * FLAGS.CF == 1 : 에러 발생, AH에 에러 코드가 저장  
 * 에러 코드 (FDD, HDD 모두 발생 가능한 에러 코드):  
     * 0x01: 디스크 Parameter가 잘못 전달  
