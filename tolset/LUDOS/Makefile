@@ -13,16 +13,22 @@ default :
 
 # 파일 생성 규칙
 
-ipl.bin : ipl.nas Makefile
-	$(NASK) ipl.nas ipl.bin ipl.lst
+ipl10.bin : ipl10.nas Makefile
+	$(NASK) ipl10.nas ipl10.bin ipl10.lst
 
-LUDOS.img : ipl.bin Makefile
-	$(EDIMG)   imgin:../z_tools/fdimg0at.tek wbinimg src:ipl.bin len:512 from:0 to:0   imgout:LUDOS.img
+LUDOS.sys : LUDOS.nas Makefile
+	$(NASK) LUDOS.nas LUDOS.sys LUDOS.lst
+
+LUDOS.img : ipl10.bin LUDOS.sys Makefile
+	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
+		wbinimg src:ipl10.bin len:512 from:0 to:0 \
+		copy from:LUDOS.sys to:@: \
+		imgout:LUDOS.img
 
 # 커맨드
 
 asm :
-	$(MAKE) ipl.bin
+	$(MAKE) ipl10.bin
 
 img :
 	$(MAKE) LUDOS.img
@@ -37,9 +43,11 @@ install :
 	$(IMGTOL) w a: LDUOS.img
 
 clear :
-	-$(DEL) ipl.bin
-	-$(DEL) ipl.lst
+	-$(DEL) ipl10.bin
+	-$(DEL) ipl10.lst
 	-$(DEL) LUDOS.img
+	-$(DEL) LUDOS.sys
+	-$(DEL) LUDOS.lst
 
 src_only :
 	$(MAKE) clean
