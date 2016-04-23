@@ -7,7 +7,7 @@ CC1      = $(TOOLPATH)cc1.exe -I$(INCPATH) -Os -Wall -quiet
 GAS2NASK = $(TOOLPATH)gas2nask.exe -a
 OBJ2BIM  = $(TOOLPATH)obj2bim.exe
 BIM2lds  = $(TOOLPATH)bim2lds.exe
-RULEFILE = $(TOOLPATH)LUDOS/haribote.rul
+RULEFILE = $(TOOLPATH)LUDOS/LUDOS.rul
 EDIMG    = $(TOOLPATH)edimg.exe
 IMGTOL   = $(TOOLPATH)imgtol.com
 COPY     = copy
@@ -35,9 +35,13 @@ bootpack.nas : bootpack.gas Makefile
 bootpack.obj : bootpack.nas Makefile
 	$(NASK) bootpack.nas bootpack.obj bootpack.lst
 
-bootpack.bim : bootpack.obj Makefile
+naskfunc.obj : naskfunc.nas Makefile
+	$(NASK) naskfunc.nas naskfunc.obj naskfunc.lst
+
+
+bootpack.bim : bootpack.obj naskfunc.obj Makefile
 	$(OBJ2BIM) @$(RULEFILE) out:bootpack.bim stack:3136k map:bootpack.map \
-		bootpack.obj
+		bootpack.obj naskfunc.obj
 # 3MB+64KB=3136KB
 
 bootpack.lds : bootpack.bim Makefile
