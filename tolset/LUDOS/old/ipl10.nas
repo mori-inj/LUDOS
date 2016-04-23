@@ -75,7 +75,7 @@ next:
 		CMP		CH,CYLS
 		JB		readloop		; CH < CYLS 라면 readloop에
 
-; 다 읽었으므로 haribote.sys를 실행한다!
+; 다 읽었으므로 LUDOS.sys를 실행한다!
 
 		MOV		[0x0ff0], CH		; IPL이 어디까지 읽었는지를 메모
 		JMP		0xc200
