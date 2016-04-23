@@ -110,7 +110,7 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
     *.obj --[obj2bim]--> *.bim // 링킹 작업. bim은 binary image file의 약자로 이 책에서만 쓰임.  
     *.bim --[bim2.hrb]--> *.lds // 링킹 작업이 끝난 후에도 각 OS에 맞게 가공이 필요.  
 boot_pack.c를 최종적으로 boot_pack.lds로 바꾼 후에 이걸 asmhead.bin뒤에 붙여서 원래 LUDOS_8.sys같은 형태의 파일을 만듦. LUDOS_8.sys와 기존에 있던 ipl10.bin파일을 합쳐서 LUDOS.img파일을 생성.    
-(hrb등 하리보테가 들어가는 것들을 전부 커스터마이징 예정. 이 작업에 상당한 시간이 소요되는 중. => hrb파일은 lds파일로 변경.)  
+(hrb등 하리보테가 들어가는 것들을 전부 커스터마이징 예정. 이 작업에 상당한 시간이 소요되는 중. => hrb파일은 lds파일로 변경.) (HariMain을 바꾸기 위해 꽤 고생중이었는데 [좋은 곳](http://hrb.osask.jp/wiki/?advance/NotHariMain)을 발견.)  
 * Makefile: 변수를 사용하는 형태로 좀 더 깔끔하게 작성. 생성해내는 파일의 이름을 변수로 설정하는 방법은 여전히 모르겠음... ipl_e.nas와 LUDOS_5.sys를 추가하는 부분에서 copy from:LUDOS.sys to :@: 라는 명령어 추가됨. bootpack_0.c가 등장하며 수많은 툴들을 위한 명령어가 잔뜩 추가됨.    
 
 
