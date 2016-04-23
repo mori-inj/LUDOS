@@ -104,15 +104,15 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
 * LUDOS_8.nas: 키보드 LED의 상태를 레지스터에 기록. 32비트 모드에서는 BIOS관련 함수를 사용할 수 없음(16비트용 기계어(BIOS 함수도 여기에 해당.)와 32비트용 기계어는 호환 불가). BIOS로 할 수 있는 작업들 중 키보드의 상태나 화면 모드에 관한 정보를 레지스터에 기록.  
 * asmhead_0.nas: LUDOS_8.nas의 내용 + C언어로 쓰인 본체 호출을 위해 코드 추가(자세한 설명은 나중에). 원래 있던 HLT 부분만 뻬서 C언어로 작성함.  
 * bootpack_0.c: C로 짠 OS 본체(HLT부분에 해당). 이 c언어를 잘 돌아가게 하기 위해 지금 매우 머리가 복잡함(왜 main이 HAriMain인거야... 표준 좀 지켜).  
-    *.c --[cc1.exe(gcc를 개조)]--> *.gas //gcc도 내부적으로 gas라는 어셈블러를 통해 바이너리 파일을 생성  
-    *.gas --[gas2nask.exe]--> *.nas // gas확장자는 gas어셈블러용이므로 nask용 어셈블리인 nas로 변경(gas2nas라는 이름이 더 적합한 것 같으니 바꾸기로)  
-    *.nas --[nask.exe]--> *.obj // 바이너리 기계어 파일이지만 링커를 거치지 않아서 직접적으로 실행 불가.  
-    *.obj --[obj2bim]--> *.bim // 링킹 작업. bim은 binary image file의 약자로 이 책에서만 쓰임.  
-    *.bim --[bim2lsd]--> *.lds // 링킹 작업이 끝난 후에도 각 OS에 맞게 가공이 필요.  
+    * *.c --[cc1.exe(gcc를 개조)]--> *.gas //gcc도 내부적으로 gas라는 어셈블러를 통해 바이너리 파일을 생성  
+    * *.gas --[gas2nask.exe]--> *.nas // gas확장자는 gas어셈블러용이므로 nask용 어셈블리인 nas로 변경(gas2nas라는 이름이 더 적합한 것 같으니 바꾸기로)  
+    * *.nas --[nask.exe]--> *.obj // 바이너리 기계어 파일이지만 링커를 거치지 않아서 직접적으로 실행 불가.  
+    * *.obj --[obj2bim]--> *.bim // 링킹 작업. bim은 binary image file의 약자로 이 책에서만 쓰임.  
+    * *.bim --[bim2lsd]--> *.lds // 링킹 작업이 끝난 후에도 각 OS에 맞게 가공이 필요.  
 boot_pack.c를 최종적으로 boot_pack.lds로 바꾼 후에 이걸 asmhead.bin뒤에 붙여서 원래 LUDOS_8.sys같은 형태의 파일을 만듦. LUDOS_8.sys와 기존에 있던 ipl10.bin파일을 합쳐서 LUDOS.img파일을 생성.    
-    hrb등 하리보테가 들어가는 것들을 전부 커스터마이징 예정. 이 작업에 상당한 시간이 소요되는 중. => hrb파일은 lds파일로 변경.  
-    HariMain을 바꾸기 위해 꽤 고생중이었는데 [좋은 곳](http://hrb.osask.jp/wiki/?advance/NotHariMain)을 발견.  
-    \tolset\z_tools\LUDOS의 *.rul과 *.lib을 바꿔줘야 함. *.rul은 직접 바꾸면 되고 *.lib은 \cd\omake\tolsrc\hrblib0a로 들어가서 startup.c파일을 수정한 후 makefile로 *.lib파일 취득 가능. 
+    - hrb등 하리보테가 들어가는 것들을 전부 커스터마이징 예정. 이 작업에 상당한 시간이 소요되는 중. => hrb파일은 lds파일로 변경.  
+    - HariMain을 바꾸기 위해 꽤 고생중이었는데 [좋은 곳](http://hrb.osask.jp/wiki/?advance/NotHariMain)을 발견.  
+    - \tolset\z_tools\LUDOS의 *.rul과 *.lib을 바꿔줘야 함. *.rul은 직접 바꾸면 되고 *.lib은 \cd\omake\tolsrc\hrblib0a로 들어가서 startup.c파일을 수정한 후 makefile로 *.lib파일 취득 가능. 
 * Makefile: 변수를 사용하는 형태로 좀 더 깔끔하게 작성. 생성해내는 파일의 이름을 변수로 설정하는 방법은 여전히 모르겠음... ipl_e.nas와 LUDOS_5.sys를 추가하는 부분에서 copy from:LUDOS.sys to :@: 라는 명령어 추가됨. bootpack_0.c가 등장하며 수많은 툴들을 위한 명령어가 잔뜩 추가됨.    
 
 
