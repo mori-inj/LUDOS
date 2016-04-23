@@ -114,7 +114,10 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
    hrb등 하리보테가 들어가는 것들을 전부 커스터마이징 예정. 이 작업에 상당한 시간이 소요되는 중. => hrb파일은 lds파일로 변경.  
    HariMain을 바꾸기 위해 꽤 고생중이었는데 [좋은 곳](http://hrb.osask.jp/wiki/?advance/NotHariMain)을 발견.  
    \tolset\z_tools\LUDOS의 *.rul과 *.lib을 바꿔줘야 함. *.rul은 직접 바꾸면 되고 *.lib은 \cd\omake\tolsrc\hrblib0a로 들어가서 startup.c파일을 수정한 후 makefile로 *.lib파일 취득 가능. 
-* Makefile: 변수를 사용하는 형태로 좀 더 깔끔하게 작성. 생성해내는 파일의 이름을 변수로 설정하는 방법은 여전히 모르겠음... ipl_e.nas와 LUDOS_5.sys를 추가하는 부분에서 copy from:LUDOS.sys to :@: 라는 명령어 추가됨. bootpack_0.c가 등장하며 수많은 툴들을 위한 명령어가 잔뜩 추가됨.    
+* naskfunc_0.nas: HLT라는 어셈블리 명령어를 C언어 상에서 사용할 수 있게 해줌. 함수이름을 전역변수로 설정하고 링킹을 위한 옵션(WCOFF모드)와 32비트 설정, 소스파일 정보 등을 추가. 맨 아래 부분에 함수의 본체를 작성.  
+* bootpack_1.c: 이제서야 hlt를 사용할 수 있음. HTL는 IO관련 함수이므로 함수명은 _io_hlt.  
+* asmhead_1.nas: asmhead_0.nas와 동일.  
+* Makefile: 변수를 사용하는 형태로 좀 더 깔끔하게 작성. 생성해내는 파일의 이름을 변수로 설정하는 방법은 여전히 모르겠음... ipl_e.nas와 LUDOS_5.sys를 추가하는 부분에서 copy from:LUDOS.sys to :@: 라는 명령어 추가됨. bootpack_0.c가 등장하며 수많은 툴들을 위한 명령어가 잔뜩 추가됨. naskfunc의 함수를 위한 링커 옵션도 추가됨.    
 
 
 ###디스크 구조(소위 말하는 디스켓)
