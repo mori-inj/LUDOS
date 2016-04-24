@@ -140,5 +140,23 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
 * bootpack_4.c: 포인터를 이용해 메모리에 직접 값을 씀. p를 추가적으로 선언할 필요 없이 캐스팅만 잘 해주면 되는데, "이렇게 쓰면 BYTE[i] = i & 0x0f와 조금 닮았다는 느낌이 들지 않습니까? 어셈블러를 너무 좋아하는 필자는 그런 것 같아서 저도 모르게 씩 웃게 됩니다."라고 표현한 필자의 의견에 전적으로 동의.  
 * naskfunc_2.nas: write_mem8함수가 필요 없어졌으므로 제거.  
 
+###[CGA(Color Graphics Adapter)](https://en.wikipedia.org/wiki/Color_Graphics_Adapter)
+4bit로 16가지 색만 표현 가능
+* 0x0: black         (#000000)  
+* 0x1: blue          (#0000AA)  
+* 0x2: green         (#00AA00)
+* 0x3: cyan          (#00AAAA)
+* 0x4: red           (#AA0000)
+* 0x5: magenta       (#AA00AA)
+* 0x6: brown         (#AA5500)
+* 0x7: light gray    (#AAAAAA)
+* 0x8: gray          (#555555)
+* 0x9: light blue    (#5555FF)
+* 0xa: light green   (#55FF55)
+* 0xb: light cyan    (#55FFFF)
+* 0xc: light red     (#FF5555)
+* 0xd: light magenta (#FF55FF)
+* 0xe: yellow        (#FFFF55)
+* 0xf: white         (#FFFFFF)
 
 
