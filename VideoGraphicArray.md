@@ -421,3 +421,4 @@ bit8-15 데이터
 
 1차 출처: [http://web.archive.org/web/20100915170717/http://community.osdev.info/?VGA#navigator](http://web.archive.org/web/20100915170717/http://community.osdev.info/?VGA#navigator)
 (http://community.osdev.info/?VGA#navigator)
+(http://osguru.net/index.php/VGA)
