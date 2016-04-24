@@ -114,6 +114,7 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
    hrb등 하리보테가 들어가는 것들을 전부 커스터마이징 예정. 이 작업에 상당한 시간이 소요되는 중. => hrb파일은 lds파일로 변경.  
    HariMain을 바꾸기 위해 꽤 고생중이었는데 [좋은 곳](http://hrb.osask.jp/wiki/?advance/NotHariMain)을 발견.  
    \tolset\z_tools\LUDOS의 *.rul과 *.lib을 바꿔줘야 함. *.rul은 직접 바꾸면 되고 *.lib은 \cd\omake\tolsrc\hrblib0a로 들어가서 startup.c파일을 수정한 후 makefile로 *.lib파일 취득 가능.  
+   어떤 C언어로 짠 프로그램이 내가 만든 OS에서 돌아가게 하는게 목적이 아니라, 내가 만드려는 OS자체가 C언어로 짜여있고, 그걸 어셈으로 바꿔서 컴퓨터가 바로 실행할 수 있게 하는게 목적인데, 이때 왜 링커가 필요한지 아직 잘 모르겠군(뒤에 각각의 프로그램이 무슨 일을 하는지 자세히 나온다니 그 때 여기도 보충).  
 * naskfunc_0.nas: HLT라는 어셈블리 명령어를 C언어 상에서 사용할 수 있게 해줌. 함수이름을 전역변수로 설정하고 링킹을 위한 옵션(WCOFF모드)와 32비트 설정, 소스파일 정보 등을 추가. 맨 아래 부분에 함수의 본체를 작성.  
 * bootpack_1.c: 이제서야 hlt를 사용할 수 있음. HTL는 IO관련 함수이므로 함수명dl _io_hlt. 외부(naskfunc_0.nas)에 정의된 함수를 사용하므로 함수 선언만 명시해주고 바로 사용가능(당연하게도, 재정의 금지).  
 * Makefile: 변수를 사용하는 형태로 좀 더 깔끔하게 작성. 생성해내는 파일의 이름을 변수로 설정하는 방법은 여전히 모르겠음... ipl_e.nas와 LUDOS_5.sys를 추가하는 부분에서 copy from:LUDOS.sys to :@: 라는 명령어 추가됨. bootpack_0.c가 등장하며 수많은 툴들을 위한 명령어가 잔뜩 추가됨. naskfunc의 함수를 위한 링커 옵션도 추가됨.    
@@ -141,6 +142,8 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
 * naskfunc_2.nas: write_mem8함수가 필요 없어졌으므로 제거.  
 * bootpack_5.c: 기본적으로 현재 320*200 해상도의 8비트 컬러모드를 쓰고 있고, 색 번호를 8비트(256개)만 사용. "팔레트"를 만들어서 256*256*256가지의 색들 중 실제로 사용할 256가지 색을 mapping할 수 있음. 별도로 설정해주지 않으면 256개 중 앞의 16개는 아래의 CGA를 사용하고, 이 코드에선 색을 직접 지정해서 사용. 16개 이상 색을 쓸 수는 있지만 일단은 16개만 사용. init_palette 함수에서 staitc 변수를 사용하는데, 직접 대입하는 것과 static을 쓰는 것에는 큰 차이가 있음: 직접 대입하는 경우엔 대입을 위한 instruction이 사용되고 runtime에 그 값이 대입 / static을 쓰는 경우 그 값을 코드 그 자체에 그대로 박아 넣는 역할. DB 명령어와 역할이 동일. set_palette의 경우 io_out8을 이용해 팔레트를 등록하는 일을 함. 사용법은 [VGA](https://github.com/mori-inj/LUDOS/blob/master/VideoGraphicArray.md) 참고. 4로 나눠주는 이유는 0x03c9가 상위 2bit을 0으로 간주하기 때문에 256->64로 만들기 위함. CLI는 CLear Interrupt flag의 약자로 interrupt flag를 0으로 만드는 명령어. STI는 SeT Interrupt flag의 약자로 interrupt flag를 1로 설정. IF는 CPU에 인터럽트 신호가 왔을때 반응할지(1) 무시할지(0) 결정. 32비트 레지스터 중에는 FLAGS라는 16비트 레지스터를 확장한 EFLAGS가 존재. 각종 플래그들로 구성. EFLAGS의 9번째 비트가 인터럽트 플래그. EFLAGS의 상태를 받아온 후 CLI해주고 원래의 상태로 다시 돌려 놓음.  
 * naskfunc_3.nas: EFLAGS를 불러오고 값을 변경 시키는 경우 스택과 PUSHFD/POPFD(FD:flag double-word)을 이용해 32비트짜리 EFLAG를 스택에 넣거나 뺌. eax에 return value 저장되는건 여기서도 동일.  
+* bootpack_6.c: boxfill8함수와 색상 정보를 담고 있는 매크로 추가.  
+* bootpack_7.c: 본격적으로 작업표시줄과 GUI스러운 화면을 갖춤.  
 
 ###[CGA(Color Graphics Adapter)](https://en.wikipedia.org/wiki/Color_Graphics_Adapter)
 4bit로 16가지 색만 표현 가능
