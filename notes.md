@@ -139,7 +139,8 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
 * bootpack_3.c: 줄무늬를 출력. 각 화소의 번지의 주소값의 하위 4비트가 색으로 쓰임.  
 * bootpack_4.c: 포인터를 이용해 메모리에 직접 값을 씀. p를 추가적으로 선언할 필요 없이 캐스팅만 잘 해주면 되는데, "이렇게 쓰면 BYTE[i] = i & 0x0f와 조금 닮았다는 느낌이 들지 않습니까? 어셈블러를 너무 좋아하는 필자는 그런 것 같아서 저도 모르게 씩 웃게 됩니다."라고 표현한 필자의 의견에 전적으로 동의.  
 * naskfunc_2.nas: write_mem8함수가 필요 없어졌으므로 제거.  
-* bootpack_5.c: 기본적으로 현재 320*200 해상도의 8비트 컬러모드를 쓰고 있고, 색 번호를 8비트(256개)만 사용. "팔레트"를 만들어서 256*256*256가지의 색들 중 실제로 사용할 256가지 색을 mapping할 수 있음. 별도로 설정해주지 않으면 256개 중 앞의 16개는 아래의 CGA를 사용하고, 이 코드에선 색을 직접 지정해서 사용. 16개 이상 색을 쓸 수는 있지만 일단은 16개만 사용. init_palette 함수에서 staitc 변수를 사용하는데, 직접 대입하는 것과 static을 쓰는 것에는 큰 차이가 있음: 직접 대입하는 경우엔 대입을 위한 instruction이 사용되고 runtime에 그 값이 대입 / static을 쓰는 경우 그 값을 코드 그 자체에 그대로 박아 넣는 역할. DB 명령어와 역할이 동일.  
+* bootpack_5.c: 기본적으로 현재 320*200 해상도의 8비트 컬러모드를 쓰고 있고, 색 번호를 8비트(256개)만 사용. "팔레트"를 만들어서 256*256*256가지의 색들 중 실제로 사용할 256가지 색을 mapping할 수 있음. 별도로 설정해주지 않으면 256개 중 앞의 16개는 아래의 CGA를 사용하고, 이 코드에선 색을 직접 지정해서 사용. 16개 이상 색을 쓸 수는 있지만 일단은 16개만 사용. init_palette 함수에서 staitc 변수를 사용하는데, 직접 대입하는 것과 static을 쓰는 것에는 큰 차이가 있음: 직접 대입하는 경우엔 대입을 위한 instruction이 사용되고 runtime에 그 값이 대입 / static을 쓰는 경우 그 값을 코드 그 자체에 그대로 박아 넣는 역할. DB 명령어와 역할이 동일. set_palette의 경우 io_out8을 이용해 팔레트를 등록하는 일을 함. 사용법은 [VGA](https://github.com/mori-inj/LUDOS/blob/master/VideoGraphicArray.md) 참고. 4로 나눠주는 이유는 0x03c9가 상위 2bit을 0으로 간주하기 때문에 256->64로 만들기 위함. CLI는 CLear Interrupt flag의 약자로 interrupt flag를 0으로 만드는 명령어. STI는 SeT Interrupt flag의 약자로 interrupt flag를 1로 설정. IF는 CPU에 인터럽트 신호가 왔을때 반응할지(1) 무시할지(0) 결정. 32비트 레지스터 중에는 FLAGS라는 16비트 레지스터를 확장한 EFLAGS가 존재. 각종 플래그들로 구성. EFLAGS의 9번째 비트가 인터럽트 플래그. EFLAGS의 상태를 받아온 후 CLI해주고 원래의 상태로 다시 돌려 놓음.  
+* naskfunc_3.nas: EFLAGS를 불러오고 값을 변경 시키는 경우 스택과 PUSHFD/POPFD(FD:flag double-word)을 이용해 32비트짜리 EFLAG를 스택에 넣거나 뺌. eax에 return value 저장되는건 여기서도 동일.  
 
 ###[CGA(Color Graphics Adapter)](https://en.wikipedia.org/wiki/Color_Graphics_Adapter)
 4bit로 16가지 색만 표현 가능
@@ -160,4 +161,18 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
 * 0xe: yellow        (#FFFF55)
 * 0xf: white         (#FFFFFF)
 
+###FLAGS 레지스터
+* 0: CF(carry flag)
+* 2: PF(parity flag)
+* 4: AF(adjust flag)
+* 6: ZF(zero flag)
+* 7: SF(sign flag)
+* 8: TF(trap flag)
+* 9: IF(interrupt flag)
+* A: DF(direction flag)
+* B: OF(overflow flag)
+* C&D: IOPL
+* E: NT(Nested task flag)
+* 언급되지 않은건 별 의미 없지만만 추후에 쓰일지도 모름.  
+* EFLAGS등 추가적인 정보는 [여기](https://en.wikipedia.org/wiki/FLAGS_register) 참고.  
 
