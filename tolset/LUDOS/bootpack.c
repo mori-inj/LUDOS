@@ -7,6 +7,7 @@ void io_store_eflags(int eflags);
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
 void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
+void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
 
 
 
@@ -55,6 +56,7 @@ void LUDOSMain(void)
 	xsize = 320;
 	ysize = 200;
 
+	/*
 	boxfill8(vram, xsize, BLACK,		0,	0,          xsize -  1, ysize - 27); //background color
 
 	boxfill8(vram, xsize, GRAY,		0,	ysize - 24, xsize -  1, ysize - 24); //gray row of taskbar
@@ -72,6 +74,19 @@ void LUDOSMain(void)
 	boxfill8(vram, xsize, DGRAY,		xsize - 37, ysize - 19, xsize - 37, ysize -  4); //gray row of tool box
 	boxfill8(vram, xsize, WHITE,		xsize - 37, ysize -  3, xsize -  4, ysize -  3); //white column of tool box
 	boxfill8(vram, xsize, WHITE,		xsize -  3, ysize - 20, xsize -  3, ysize -  3); //white row of tool box
+	*/
+
+	boxfill8(vram, xsize, BLACK,		0,	0,          xsize -  1, ysize - 1);
+	boxfill8(vram, xsize, WHITE,		1,	ysize - 20,          xsize -  2, ysize - 2);
+	boxfill8(vram, xsize, BLACK,		2,	ysize - 19,          xsize -  3, ysize - 3);
+
+	boxfill8(vram, xsize, WHITE,		4,	ysize - 17,          40, ysize - 5);
+	boxfill8(vram, xsize, BLACK,		5,	ysize - 16,          39, ysize - 6);
+
+	line(vram,xsize, WHITE, 10, 10, 20, 150);
+	line(vram,xsize, WHITE, 50, 190, 60, 30);
+	line(vram,xsize, WHITE, 50, 50, 210, 40);
+	line(vram,xsize, WHITE, 60, 60, 220, 70);
 
 	for (;;) 
 	{
@@ -124,9 +139,39 @@ void set_palette(int start, int end, unsigned char *rgb)
 void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
 {
 	int x, y;
-	for (y = y0; y <= y1; y++) {
+	for (y = y0; y <= y1; y++) 
+	{
 		for (x = x0; x <= x1; x++)
 			vram[y * xsize + x] = c;
 	}
 	return;
+}
+
+void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
+{
+	int x, y, old_y, t_y;
+	x1++;
+	y1+=(y0<y1)?1:-1;
+	if(x0 == x1)
+	{
+		for (y = y0; y <= y1; y++)
+			vram[y * xsize + x0] = c;
+	}
+
+	else
+	{
+		old_y = y0;
+		for (x = x0; x < x1; x++)
+		{
+			t_y = (int)((double) (y1 - y0) / (x1 - x0) * (x - x0) + y0);
+			vram[((y0 < y1) ? old_y : t_y) * xsize + x] = c;
+			for(y = ((y0 < y1) ? old_y : t_y); y < ((y0 < y1) ? t_y : old_y); y++)
+				vram[y * xsize + x] = c;	
+			old_y = t_y;
+		}
+		//y1-=(y0<y1)?1:-1;
+		vram[y1 * xsize + x1-1] = c;
+	}
+
+	return; 
 }
