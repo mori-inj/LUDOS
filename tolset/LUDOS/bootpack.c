@@ -83,10 +83,7 @@ void LUDOSMain(void)
 	boxfill8(vram, xsize, WHITE,		4,	ysize - 17,          40, ysize - 5);
 	boxfill8(vram, xsize, BLACK,		5,	ysize - 16,          39, ysize - 6);
 
-	line(vram,xsize, WHITE, 10, 10, 20, 150);
-	line(vram,xsize, WHITE, 50, 190, 60, 30);
-	line(vram,xsize, WHITE, 50, 50, 210, 40);
-	line(vram,xsize, WHITE, 60, 60, 220, 70);
+	
 
 	for (;;) 
 	{
@@ -149,29 +146,20 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, i
 
 void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
 {
-	int x, y, old_y, t_y;
-	x1++;
-	y1+=(y0<y1)?1:-1;
-	if(x0 == x1)
-	{
-		for (y = y0; y <= y1; y++)
-			vram[y * xsize + x0] = c;
-	}
-
-	else
-	{
-		old_y = y0;
-		for (x = x0; x < x1; x++)
+	int x, y, d_x = x1 - x0, d_y = (y1 >= y0)? y1 - y0 : y0 - y1;
+	vram[y0 * xsize + x0] = c;
+	if(d_x >= d_y)
+		for(x = x0 + 1; x < x1; x++)
 		{
-			t_y = (int)((double) (y1 - y0) / (x1 - x0) * (x - x0) + y0);
-			vram[((y0 < y1) ? old_y : t_y) * xsize + x] = c;
-			for(y = ((y0 < y1) ? old_y : t_y); y < ((y0 < y1) ? t_y : old_y); y++)
-				vram[y * xsize + x] = c;	
-			old_y = t_y;
+			y = (int)((double) (y1 - y0) / (x1 - x0) * (x - x0) + y0 + 0.5);
+			vram[y * xsize + x] = c;
 		}
-		//y1-=(y0<y1)?1:-1;
-		vram[y1 * xsize + x1-1] = c;
-	}
-
+	else
+		for(y = y0 + 1; (y1 >= y0)? (y < y1) : (y > y1); y+=((y1 >= y0)? 1 : -1))
+		{
+			x =  (int)((double)(x1 - x0) / (y1 - y0) * (y - y0) + x0 + 0.5);
+			vram[y * xsize + x] = c;
+		}
+	vram[y1 * xsize + x1] = c;
 	return; 
 }
