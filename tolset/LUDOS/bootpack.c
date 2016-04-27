@@ -7,8 +7,29 @@ void io_store_eflags(int eflags);
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
 void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
+void boxline8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
 void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
+void pixel(unsigned char *vram, int xsize, unsigned char c, int x, int y);
+double sqrt(double x);
 
+typedef struct p2
+{
+	double x;
+	double y;
+} Point2;
+
+typedef struct p3
+{
+	double x;
+	double y;
+	double z;
+} Point3;
+
+void cube(unsigned char *vram, int xsize, unsigned char c, double x, double y, double z, double size);
+Point2 transform(double Px, double Py, double Pz);
+
+#define WIDTH 320
+#define HEIGHT 200
 
 
 #define BLACK		COL8_000000
@@ -46,6 +67,11 @@ void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x
 #define COL8_008484		14
 #define COL8_848484		15
 
+
+#define D 350
+double ox=1,oy=0,oz=0;
+double origin_x = -100, origin_y = 0, origin_z = 0;
+
 void LUDOSMain(void)
 {
 	char *vram;
@@ -82,6 +108,7 @@ void LUDOSMain(void)
 	boxline8(vram, xsize, WHITE,		2,	ysize - 18,          40, ysize - 3);
 	boxline8(vram, xsize, WHITE,		xsize-30,	ysize - 17,     xsize - 5, ysize - 4);
 	
+	cube(vram, xsize, WHITE, 0, 0, 0, 20);
 
 	for (;;) 
 	{
@@ -157,6 +184,11 @@ void boxline8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, i
 	}
 }
 
+void pixel(unsigned char *vram, int xsize, unsigned char c, int x, int y)
+{
+	vram[y * xsize + x] = c;
+}
+
 void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1)
 {
 	int x, y, d_x = x1 - x0, d_y = (y1 >= y0)? y1 - y0 : y0 - y1;
@@ -175,4 +207,71 @@ void line(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x
 		}
 	vram[y1 * xsize + x1] = c;
 	return; 
+}
+
+double sqrt(double x)
+{
+	double ret = x;
+	int i;
+	for(i=0; i<20; i++)
+		ret = (ret + (x/ret)) / 2;
+	return ret;
+}
+
+Point2 transform(double Px, double Py, double Pz)
+{
+	Point2 ret;
+	double A,n,m;
+	Px -= origin_x;
+	Py -= origin_y;
+	Pz -= origin_z;
+
+	A = ox * Px + oy * Py+ oz * Pz;
+	n = D * (oz - Pz / A) / sqrt(ox * ox + oy * oy);
+	m = D * (Px * oy - Py * ox) / (A * sqrt(ox * ox + oy * oy));
+	
+	ret.x = m+WIDTH/2;
+	ret.y = n+HEIGHT/2;
+	return ret;
+}
+
+void cube(unsigned char *vram, int xsize, unsigned char c, double x, double y, double z, double size)
+{
+	Point3 p;
+	int i;
+	Point3 points[8];
+
+	p.x = x;
+	p.y = y;
+	p.z = z;
+
+	int connect1[12]={0,0,1,2,4,4,6,5,0,1,2,3};
+	int connect2[12]={1,2,3,3,5,6,7,7,4,5,6,7};
+
+	double m,n,m1,n1,m2,n2;
+
+	for(i=0; i<8; i++)
+	{
+		points[i].x = p.x+(i%2==0)? size/2 : -size/2;
+		points[i].y = p.y+(i/2%2==0)? size/2 : -size/2;
+		points[i].z = p.z+(i/4%2==0)? size/2 : -size/2;
+	}
+
+	for(i=0; i<8; i++)
+	{
+		m = transform(points[i].x,points[i].y,points[i].z).x;
+		n = transform(points[i].x,points[i].y,points[i].z).y;
+		
+		pixel(vram, xsize, c, m, n);
+	}
+	for(i=0; i<12; i++)
+	{
+		m1 = transform(points[connect1[i]].x, points[connect1[i]].y, points[connect1[i]].z).x;
+		n1 = transform(points[connect1[i]].x, points[connect1[i]].y, points[connect1[i]].z).y;
+
+		m2 = transform(points[connect2[i]].x, points[connect2[i]].y, points[connect2[i]].z).x;
+		n2 = transform(points[connect2[i]].x, points[connect2[i]].y, points[connect2[i]].z).y;
+
+		line(vram, xsize, c, m1, n1, m2, n2);
+	}
 }
