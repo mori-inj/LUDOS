@@ -76,6 +76,7 @@ void LUDOSMain(void)
 {
 	char *vram;
 	int xsize, ysize;
+	int temp;
 
 	init_palette();
 	vram = (char *) 0xa0000;
@@ -108,8 +109,8 @@ void LUDOSMain(void)
 	boxline8(vram, xsize, WHITE,		2,	ysize - 18,          40, ysize - 3);
 	boxline8(vram, xsize, WHITE,		xsize-30,	ysize - 17,     xsize - 5, ysize - 4);
 	
-	cube(vram, xsize, WHITE, 0, 0, 0, 20);
-
+	//cube(vram, xsize, WHITE, 0, 0, 0, 20);
+	
 	for (;;) 
 	{
 		io_hlt();

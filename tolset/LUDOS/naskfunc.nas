@@ -15,7 +15,7 @@
 
 _io_hlt:	; void io_hlt(void);
 		HLT
-		RET
+		RETs
 
 _io_cli:	; void io_cli(void);
 		CLI
@@ -75,3 +75,6 @@ _io_store_eflags:	; void io_store_eflags(int eflags);
 		PUSH	EAX
 		POPFD		; POP EFLAGSÀÇ ÀÇ¹Ì
 		RET
+
+		
+		
