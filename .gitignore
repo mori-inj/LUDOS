@@ -1,3 +1,7 @@
 dir_to_ignore/
 cd
 bz162
+tolset/z_new_o
+tolset/z_new_w
+tolset/z_osabin
+tolset/z_tools
