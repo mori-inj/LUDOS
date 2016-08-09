@@ -143,7 +143,7 @@ NASM이라는 어셈블러(어셈블리 코드를 기계어로 바꿔줌)를 개
 * bootpack_5.c: 기본적으로 현재 320 * 200 해상도의 8비트 컬러모드를 쓰고 있고, 색 번호를 8비트(256개)만 사용. "팔레트"를 만들어서 256*256*256가지의 색들 중 실제로 사용할 256가지 색을 mapping할 수 있음. 별도로 설정해주지 않으면 256개 중 앞의 16개는 아래의 CGA를 사용하고, 이 코드에선 색을 직접 지정해서 사용. 16개 이상 색을 쓸 수는 있지만 일단은 16개만 사용. init_palette 함수에서 staitc 변수를 사용하는데, 직접 대입하는 것과 static을 쓰는 것에는 큰 차이가 있음: 직접 대입하는 경우엔 대입을 위한 instruction이 사용되고 runtime에 그 값이 대입 / static을 쓰는 경우 그 값을 코드 그 자체에 그대로 박아 넣는 역할. DB 명령어와 역할이 동일. set_palette의 경우 io_out8을 이용해 팔레트를 등록하는 일을 함. 사용법은 [VGA](https://github.com/mori-inj/LUDOS/blob/master/VideoGraphicArray.md) 참고. 4로 나눠주는 이유는 0x03c9가 상위 2bit을 0으로 간주하기 때문에 256->64로 만들기 위함. CLI는 CLear Interrupt flag의 약자로 interrupt flag를 0으로 만드는 명령어. STI는 SeT Interrupt flag의 약자로 interrupt flag를 1로 설정. IF는 CPU에 인터럽트 신호가 왔을때 반응할지(1) 무시할지(0) 결정. 32비트 레지스터 중에는 FLAGS라는 16비트 레지스터를 확장한 EFLAGS가 존재. 각종 플래그들로 구성. EFLAGS의 9번째 비트가 인터럽트 플래그. EFLAGS의 상태를 받아온 후 CLI해주고 원래의 상태로 다시 돌려 놓음.  
 * naskfunc_3.nas: EFLAGS를 불러오고 값을 변경 시키는 경우 스택과 PUSHFD/POPFD(FD:flag double-word)을 이용해 32비트짜리 EFLAG를 스택에 넣거나 뺌. eax에 return value 저장되는건 여기서도 동일.  
 * bootpack_6.c: boxfill8함수와 색상 정보를 담고 있는 매크로 추가.  
-* bootpack_7.c: 본격적으로 작업표시줄과 GUI스러운 화면을 갖춤.  
+* bootpack_7.c: 본격적으로 작업표시줄과 GUI스러운 화면을 갖춤. 3차원 큐브 그리는 예제 추가.
 
 ###[CGA(Color Graphics Adapter)](https://en.wikipedia.org/wiki/Color_Graphics_Adapter)
 4bit로 16가지 색만 표현 가능
